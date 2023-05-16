@@ -71,3 +71,31 @@ fun DefaultPreview() {
 // - preview's naming ends with "Preview" word
 // - always use theme to display a preview
 // - preview composable also works as documentation on how to use a component
+
+// Jetpack Compose Tools:
+// - Project Samples: can import samples of Jetpack Compose in `File -> New -> Import Sample`
+// - Interactive Mode: can watch the interaction animation by clicking on 'Start interactive Mode' from icon on the right Preview's name (hand clicking icon)
+// - Live Edit: can live edit using emulator
+// - Animation Preview: can preview animation by clicking 'Animation Preview' from icon on the right on the Preview's name (motion icon)
+// - Live Template: write composable component by writing shortcut:
+// --- comp: make composable function @Composable
+// --- prev: make composable function with @Preview
+// --- W, WR, WC: add container Box, Row, or Column
+// --- paddp: add padding modifier in dp
+// --- weight: add weight modifier
+// // Preview Parameter: preview multiple component based on multiple kind of  same-type parameter
+/*
+class UserPreviewParameterProvider: PreviewParameterProvider<User> {
+    override val values = sequenceOf(
+        User("Rickyslash")
+        User("Miyamoto Musashi")
+    )
+}
+
+fun DefaultPreview(
+    @PreviewParameter(UserPreviewParameterProvider::class) user: User
+    ) {
+        MyComposeModifierTheme {
+            contactCard(user.name)
+        }
+    }*/
