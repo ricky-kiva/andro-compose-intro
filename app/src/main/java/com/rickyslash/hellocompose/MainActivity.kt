@@ -18,6 +18,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.rickyslash.hellocompose.ui.theme.HelloComposeTheme
 
+private val sampleName = listOf(
+    "Guts",
+    "Casca",
+    "Puck",
+    "Griffith",
+    "Ishidro",
+    "Farnese",
+    "Serpico",
+    "Schirke"
+)
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,14 +36,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             // this to set the 'theme' of the Compose
             HelloComposeTheme {
-                // `Surface()` represents rectangular that serves as drawing canvas
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
-                ) {
-                    // call the custom `Greeting()` Composable Function
-                    Greeting("Rickyslash")
-                }
+                // call the custom Composable Function that has been made
+                HelloComposeApp()
             }
         }
     }
@@ -62,12 +67,35 @@ fun Greeting(name: String) {
     }
 }
 
+@Composable
+fun GreetingList(names: List<String>) {
+    if (names.isNotEmpty()) {
+        Column {
+            for (name in names) {
+                Greeting(name = name)
+            }
+        }
+    } else {
+        Text("No people to greet :(")
+    }
+}
+
+@Composable
+fun HelloComposeApp() {
+    // `Surface()` represents rectangular that serves as drawing canvas
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = MaterialTheme.colors.background) {
+        GreetingList(names = sampleName)
+    }
+}
+
 // `@Preview()` annotation to preview on 'Design' tab
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
     HelloComposeTheme {
-        Greeting("Rickyslash")
+        HelloComposeApp()
     }
 }
 
