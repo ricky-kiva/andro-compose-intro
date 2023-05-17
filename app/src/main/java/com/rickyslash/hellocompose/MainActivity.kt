@@ -418,3 +418,67 @@ fun Address(
 
 }
 */
+
+// UI update process with Jetpack Compose:
+// - make composable function that is immutable
+// - when the function is being run, the first UI being made is called 'Initial Composition'
+// - when there is UI change (input, state change, etc) Composable Function will be called again
+// --- it will renew 'slot table' & build a brand new UI
+
+// Recomposition: the condition of Composable Function on making a brand new UI
+
+// best practice on Recomposition:
+// - Fast: ensure the process is fast. If the process is heavy (read database or accessing API), do it on background thread & send to parameter
+// - Idempotent: calling Composable Function with same input will always have the same output
+// - Side-effect-free: side effect is an app status change because of factor outside of the Composable Function. Use Effect API to control it
+
+// Consideration in Recomposition:
+// - Composable Function could be run with different order:
+// --- system will search for highest priority element and execute it first
+// --- every Composable Function need to be independent
+
+// - Composable Function could be run together (in Parallel)
+// --- this makes us need to ensure that there is no side-effect that possibly happen in the Composable Function
+/* `items` variable value could change when recomposition is happening:
+@Composable
+@Deprecated("Example with bug")
+fun ListWithBug(myList: List<String>) {
+    var items = 0
+
+    Row(horizontalArrangement = Arrangement.SpaceBetween) {
+        Column {
+            for (item in myList) {
+                Text("Item: $item")
+                items++ // Avoid! Side-effect of the column recomposing.
+            }
+        }
+        Text("Count: $items")
+    }
+}*/
+
+// - Recomposition will skip unchanged UI
+/* example:
+@Composable
+fun NameList(
+    header: String,
+    names: List<String>,
+) {
+    Column {
+        // this will recompose when [header] changes, but not when [names] changes
+        Text(header, style = MaterialTheme.typography.h5)
+        Divider()
+        LazyColumn {
+            items(names) { name ->
+                // the adapter will recompose when item's [name] updated, but not when [header] changes
+                Text(name)
+            }
+        }
+    }
+}*/
+
+// - Recomposition is reliable
+// --- if parameter changed when recomposition hasn't been finished, Compose will abort Recomposition & reset with new parameter
+
+// - Composable Function could be called multiple times
+// --- example: when making animation
+// --- in handling with heavy process, better to do it outside Composable Function and send it using parameter
