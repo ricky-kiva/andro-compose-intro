@@ -3,13 +3,19 @@ package com.rickyslash.hellocompose
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.rickyslash.hellocompose.ui.theme.HelloComposeTheme
 
 class MainActivity : ComponentActivity() {
@@ -35,8 +41,25 @@ class MainActivity : ComponentActivity() {
 // `@Composable` annotation to make Composable Function (a function to make layout)
 @Composable
 fun Greeting(name: String) {
-    // `Text` is a built-in function from Material library
-    Text(text = "Hello $name!")
+    // make row layout
+    Row(
+        modifier = Modifier.padding(8.dp),
+        verticalAlignment = Alignment.CenterVertically) {
+        // display an image
+        Image(
+            painter =  painterResource(R.drawable.img_jetpack_compose),
+            contentDescription = "Android Logo",
+            modifier = Modifier.size(80.dp))
+        // make column layout
+        Column {
+            // `Text` is a built-in function from Material library
+            Text(
+                text = "Hello $name!",
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold)
+            Text(text = "Welcome to Machine.")
+        }
+    }
 }
 
 // `@Preview()` annotation to preview on 'Design' tab
@@ -44,7 +67,7 @@ fun Greeting(name: String) {
 @Composable
 fun DefaultPreview() {
     HelloComposeTheme {
-        Greeting("World")
+        Greeting("Rickyslash")
     }
 }
 
