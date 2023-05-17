@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import com.rickyslash.hellocompose.ui.theme.HelloComposeTheme
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Devices
 
 private val sampleName = listOf(
@@ -92,7 +93,12 @@ fun Greeting(name: String) {
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold
                 )
-                Text(text = "Welcome to Machine.")
+                // style is changed. "copy" is used to modify typography theme as needed
+                Text(
+                    text = "Welcome to Machine.",
+                    style = MaterialTheme.typography.body1.copy(
+                        fontStyle = FontStyle.Italic)
+                )
             }
             // set icon button
             IconButton(onClick = { isExpanded = !isExpanded }) {
