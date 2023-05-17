@@ -45,12 +45,9 @@ private val sampleName = listOf(
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // this to deploy composable function on Activity
-        setContent {
-            // this to set the 'theme' of the Compose
-            HelloComposeTheme {
-                // call the custom Composable Function that has been made
-                HelloComposeApp()
+        setContent { // this to deploy composable function on Activity
+            HelloComposeTheme { // this to set the 'theme' of the Compose
+                HelloComposeApp() // call the custom Composable Function that has been made
             }
         }
     }
@@ -59,10 +56,8 @@ class MainActivity : ComponentActivity() {
 // `@Composable` annotation to make Composable Function (a function to make layout)
 @Composable
 fun Greeting(name: String) {
-    // add state variable (by if you import setValue & getValue)
-    var isExpanded by remember { mutableStateOf(false) }
-    // add spring animation by dp
-    val animatedSizeDp by animateDpAsState(
+    var isExpanded by remember { mutableStateOf(false) } // add state variable (by if you import setValue & getValue)
+    val animatedSizeDp by animateDpAsState( // add spring animation by dp
         targetValue = if (isExpanded) 100.dp else 80.dp,
         animationSpec = spring(
             dampingRatio = Spring.DampingRatioMediumBouncy,
@@ -70,38 +65,32 @@ fun Greeting(name: String) {
         )
     )
 
-    // add card display
-    Card(
+    Card( // add card display
         backgroundColor = MaterialTheme.colors.primary,
         shape = MaterialTheme.shapes.medium,
         modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp)) {
-        // make row layout
-        Row(
+
+        Row( // make row layout
             modifier = Modifier.padding(8.dp),
             verticalAlignment = Alignment.CenterVertically) {
-            // display an image
-            Image(
+            Image( // display an image
                 painter = painterResource(R.drawable.img_jetpack_compose),
                 contentDescription = "Android Logo",
                 modifier = Modifier.size(animatedSizeDp)
             )
-            // make column layout
-            Column(modifier = Modifier.weight(1f)) {
-                // `Text` is a built-in function from Material library
-                Text(
+            Column(modifier = Modifier.weight(1f)) { // make column layout
+                Text( // `Text` is a built-in function of Compose
                     text = "Hello $name!",
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold
                 )
-                // style is changed. "copy" is used to modify typography theme as needed
                 Text(
                     text = "Welcome to Machine.",
-                    style = MaterialTheme.typography.body1.copy(
+                    style = MaterialTheme.typography.body1.copy( // "copy" is used to modify typography theme as needed
                         fontStyle = FontStyle.Italic)
                 )
             }
-            // set icon button
-            IconButton(onClick = { isExpanded = !isExpanded }) {
+            IconButton(onClick = { isExpanded = !isExpanded }) { // set icon button
                 Icon(
                     imageVector = if (isExpanded) Icons.Filled.ExpandLess else Icons.Outlined.ExpandMore,
                     contentDescription = if (isExpanded) "Show less" else "Show more"
@@ -126,8 +115,7 @@ fun GreetingList(names: List<String>) {
 
 @Composable
 fun HelloComposeApp() {
-    // `Surface()` represents rectangular that serves as drawing canvas
-    Surface(
+    Surface( // `Surface()` represents rectangular that serves as drawing canvas
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colors.background) {
         GreetingList(names = sampleName)
@@ -217,3 +205,75 @@ fun main() {
     val oddNumber = number.filter { it % 2 == 1 }
     print(oddNumber)
 }*/
+
+// 2 main component of Compose (Tech Stack):
+// - Development Host:
+// --- Android Studio: have tool to build compose
+// --- Compose Compiler Plugin: to generate code tagged @Composable to UI
+// --- Kotlin Compiler: use features of Kotlin
+// - Device:
+// --- Compose Runtime: the core of Compose that act to add things to structure tree
+// --- Compose UI Core: to measure, layout, and draw UI
+// --- Compose UI Foundation: includes basic building block like Text, Image, Row, Column, etc
+// --- Compose UI Material: implementation of Material Design to Compose like Button, Card, FAB, etc
+
+// Kotlin Features in Compose:
+// - Named Argument & Default Argument:
+// --- default:
+/* Text("Click Me") */
+// --- named:
+/* Text(
+     text = number.toString(),
+     modifier = Modifier.align(Alignment.CenterHorizontally),
+     style = MaterialTheme.typography.h2,
+     fontStyle = FontStyle.Italic,
+)*/
+
+// - Scope & Receiver:
+/* Column {
+    Text(
+        // can access `Alignment.CenterHorizontally` because it's inside `Column{}`
+        // can't access `Alignment.CenterVertically` because it only could be accessed in `Row{}`
+        modifier = Modifier.align(Alignment.CenterHorizontally),
+)}*/
+
+// - Singleton Object: could make singleton object, use keyword "object"
+// --- example of usage is in calling property from material design like typography, color, or shapes:
+// --- `style = MaterialTheme.typography.h2,`
+
+// - Trailing comma: enable to keep comma on the last parameter
+/* Text(
+        text = number.toString(),
+        modifier = Modifier.align(Alignment.CenterHorizontally),
+        style = MaterialTheme.typography.h2,
+        fontStyle = FontStyle.Italic, //trailing comma
+)*/
+
+// - DSL (Domain Specific Language): write code based on domain of specific app safely
+/* LazyRow { // DSL
+        item { // add single item
+              Text("List of Numbers:")
+        }
+        items(number){ // add list item
+             Text("${it+1}")
+        }
+}*/
+
+// - Higher-order Function (HoF) & Lambda Expression:
+// HoF is a function that uses another function as parameter, or use it as return type
+/* example:
+    MyButton { number += 1 }
+    …
+    fun MyButton(onButtonClicked: () -> Unit) { //higher-order function
+        Button(onClick = onButtonClicked) { //lambda expression
+            Text("Click Me")
+        }
+}*/
+
+// - Delegated Properties: is a property that the value is delegated to another place
+/* example:
+    var number by remember {
+         mutableStateOf(0)
+    }*/
+
+// - Top Level Function: we can use top-level function (defined at outermost level of a module) and utilize it to any Compose function
