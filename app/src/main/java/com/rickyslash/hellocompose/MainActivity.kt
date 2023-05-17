@@ -99,3 +99,25 @@ fun DefaultPreview(
             contactCard(user.name)
         }
     }*/
+
+// Declarative is a paradigm that describes the "what to do" intuitively
+// Imperative is a paradigm that describes the "how" from a process that will be done (by writing the code 1 by 1)
+
+// examples:
+/* - Declarative:
+fun main() {
+    val number = listOf(1, 2, 3, 4, 5, 6, 7, 8)
+    val oddNumber = mutableListOf<Int>()
+    for (num in number) {
+        if (num % 2 == 1) {
+            oddNumber.add(num)
+        }
+    }
+    print(oddNumber)
+}*/
+/* - Intuitive:
+fun main() {
+    val number = listOf(1, 2, 3, 4, 5, 6, 7, 8)
+    val oddNumber = number.filter { it % 2 == 1 }
+    print(oddNumber)
+}*/
