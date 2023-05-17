@@ -305,6 +305,7 @@ fun main() {
 // Execution Model: every @Composable function will be translated by compiler by injecting parameter `$composer` as a calling context
 // - parameter `%composer` will be continued by other Composable Function inside @Composable
 // - `$composer` will call `start` in the beginning & put an `object group` into 'slot table' with certain id, then call `end` in the end
+// --- 'slot table' use 'Gap Buffer' data structure
 /* example of compiled Composable function:
 fun NamePlate(name: String, lastname: String, $composer: Composer<*>) {
 @Composable
