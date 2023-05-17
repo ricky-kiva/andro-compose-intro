@@ -277,3 +277,144 @@ fun main() {
     }*/
 
 // - Top Level Function: we can use top-level function (defined at outermost level of a module) and utilize it to any Compose function
+
+// `@Composable` act as an annotation for Jetpack Compose to work
+/* The way of using `@Composable` is the same as using suspend
+    // function declaration
+    @Composable fun MyFun() { … }
+
+    // lambda declaration
+    val myLambda = @Composable { … }
+
+    // function type
+    fun MyFun(myParam: @Composable () -> Unit) { … }
+*/
+/* Composable function only compatible if nested in Composable function
+    fun Example(a: () -> Unit, b: @Composable () -> Unit) {
+       a() // allowed
+       b() // NOT allowed
+    }
+
+    @Composable
+    fun Example(a: () -> Unit, b: @Composable () -> Unit) {
+       a() // allowed
+       b() // allowed
+    }
+*/
+
+// Execution Model: every @Composable function will be translated by compiler by injecting parameter `$composer` as a calling context
+// - parameter `%composer` will be continued by other Composable Function inside @Composable
+// - `$composer` will call `start` in the beginning & put an `object group` into 'slot table' with certain id, then call `end` in the end
+/* example of compiled Composable function:
+fun NamePlate(name: String, lastname: String, $composer: Composer<*>) {
+@Composable
+fun CounterApp($composer: Composer) {
+   $composer.start(123)
+    Column {
+        var number by remember($composer) { // key 456
+            mutableStateOf(0)
+        }
+        Button(
+              $composer, // key 789
+              onClick = { number += 1 }
+        ) {
+              Text("Count: ${number.value}")
+        }
+    }
+    $composer.end()
+}*/
+
+// the form of 'slot table' will be:
+// Counter (Group(123) | remember (Group(456) | State(0)) | Button (Ground(789) | "Count: 0" | {...} | Button(...)))
+
+// 'slot table' could be changed based on condition:
+/* example function:
+@Composable fun App() {
+    val result = getData()
+    if (result == null) {
+        Loading(...)
+    } else {
+        Header(result)
+        Body(result)
+    }
+}*/
+// - null -> App (Group(123) | Loading(...))
+// - not null -> App (Group(456) | Header | Body))
+
+// Positional Memoization: Composable function can save output based on its position on 'slot table'
+// - Function Memoization: ability for function to save output (with key as marker) into cache according to the input
+
+// Remember: is a wrapper to to save variable that is a non-Composable Function into cache. It's lightweight because it only store location
+/* example:
+@Composable
+fun App(items: List<String>, query: String) {
+    val results = remember {
+        items.filter { it.matches(query) }
+    }
+    ...
+}*/
+
+// Storing Parameter: Compose will save every parameter of Composable Function into 'slot table'
+/* example:
+@Composable fun Dicoding(number: Int) {
+    Address(
+        number = number,
+        street = "Batik Kumeli",
+        city = "Bandung",
+        country = "Indonesia",
+        zip = "50123",
+    )
+}
+
+@Composable fun Address(
+    number: Int,
+    street: String,
+    city: String,
+    country: String,
+    zip: String,
+) {
+    Text(“Alamat:)
+    Text("$number $street")
+    Text(city)
+    Text(", ")
+    Text(country)
+    Text(" ")
+    Text(zip)
+}*/
+
+/* What's being done on compiler:
+fun Dicoding(
+    $composer: Composer,
+    $static: Int,
+    number: Int
+) {
+    if (number == $composer.next()) {
+        Address(
+            $composer,
+            number=number,
+            street="Batik Kumeli",
+            city="Bandung",
+    ) else {
+        $composer.skip()
+    }
+}
+
+fun Address(
+    $composer: Composer,
+    $static: Int,
+    number: Int,
+    street: String,
+    city: String,
+    country="Indonesia",
+    zip="50123",
+) {
+    Text($composer, 0b1, “Alamat:”)
+    Text($composer, ($static and 0b11) and (($static and 0b10) shr 1), "$number $street")
+    Text($composer, ($static and 0b100) shr 2, city)
+    Text($composer, 0b1, ", ")
+    Text($composer, ($static and 0b1000) shr 3, country)
+    Text($composer, 0b1, " ")
+    Text($composer, ($static and 0b10000) shr 4, zip)
+
+}
+*/
