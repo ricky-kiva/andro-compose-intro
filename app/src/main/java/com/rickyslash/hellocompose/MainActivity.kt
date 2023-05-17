@@ -5,10 +5,13 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ExpandLess
+import androidx.compose.material.icons.outlined.ExpandMore
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -46,6 +49,9 @@ class MainActivity : ComponentActivity() {
 // `@Composable` annotation to make Composable Function (a function to make layout)
 @Composable
 fun Greeting(name: String) {
+    // add state variable
+    var isExpanded = remember { mutableStateOf(false) }
+
     // make row layout
     Row(
         modifier = Modifier.padding(8.dp),
@@ -56,13 +62,20 @@ fun Greeting(name: String) {
             contentDescription = "Android Logo",
             modifier = Modifier.size(80.dp))
         // make column layout
-        Column {
+        Column(modifier = Modifier.weight(1f)) {
             // `Text` is a built-in function from Material library
             Text(
                 text = "Hello $name!",
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold)
             Text(text = "Welcome to Machine.")
+        }
+        // set icon button
+        IconButton(onClick = { isExpanded.value = !isExpanded.value}) {
+            Icon(
+                imageVector = if (isExpanded.value) Icons.Filled.ExpandLess else Icons.Outlined.ExpandMore,
+                contentDescription =  if (isExpanded.value) "Show less" else "Show more"
+            )
         }
     }
 }
